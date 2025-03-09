@@ -186,7 +186,7 @@ const metadataSchema = z.object({
 });
 
 // -- Vehicle Claim DTOs --
-export const createVehicleClaimDto = z.object({
+const createVehicleClaimDto = z.object({
   companyReference: z.string().min(1, 'Company reference is required'),
   policyNumber: z.string().min(1, 'Policy number is required'),
   partnerRef: z.string().optional(),
@@ -209,4 +209,10 @@ export const createVehicleClaimDto = z.object({
   metadata: metadataSchema,
 });
 
-export const updateVehicleClaimDto = createVehicleClaimDto.partial(); // Allow partial updates
+const updateVehicleClaimDto = createVehicleClaimDto.partial();
+
+// Validation functions
+export const validateCreateVehicleClaim = (data) =>
+  createVehicleClaimDto.parse(data);
+export const validateUpdateVehicleClaim = (data) =>
+  updateVehicleClaimDto.parse(data);

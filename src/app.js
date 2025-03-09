@@ -4,7 +4,8 @@ import helmet from 'helmet';
 import express from 'express';
 
 import { envConfig } from './config/env.config.js';
-import { systemLogs as logger, morganMiddleware } from './utils/logger.js';
+import { morganMiddleware } from './middlewares/morgan.middleware.js';
+import vehicleClaimRouter from './routes/vehicleClaim.routes.js';
 
 export const createApp = () => {
   const app = express();
@@ -18,12 +19,7 @@ export const createApp = () => {
   app.use(express.json());
   app.use(morganMiddleware);
 
-  app.get('/', (req, res) => {
-    logger.info('Welcome to Vehicle Insurance Claim API');
-    res.status(200).json({
-      message: 'Welcome to Vehicle Insurance Claim API',
-    });
-  });
+  app.use('/api/v1/vehicle-claims', vehicleClaimRouter);
 
   return app;
 };
