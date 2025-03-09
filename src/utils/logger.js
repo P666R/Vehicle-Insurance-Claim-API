@@ -108,14 +108,10 @@ systemLogs.info(`Logger initialized in ${envConfig.NODE_ENV} mode`);
 export const morganMiddleware = morgan(
   (tokens, req, res) =>
     JSON.stringify({
-      remote_addr: tokens['remote-addr'](req, res),
       method: tokens.method(req, res),
       url: tokens.url(req, res),
-      http_version: tokens['http-version'](req, res),
       status: tokens.status(req, res),
       content_length: tokens.res(req, res, 'content-length'),
-      referrer: tokens.referrer(req, res),
-      user_agent: tokens['user-agent'](req, res),
       response_time: tokens['response-time'](req, res),
     }),
   {
@@ -125,10 +121,10 @@ export const morganMiddleware = morgan(
         if (logMessage) {
           try {
             const data = JSON.parse(logMessage);
-            systemLogs.info('incoming-request', data);
-          } catch (err) {
+            systemLogs.http('incoming-request', data);
+          } catch (error) {
             systemLogs.error('Error parsing morgan log message', {
-              error: err.message,
+              error: error.message,
               original: logMessage,
             });
           }
