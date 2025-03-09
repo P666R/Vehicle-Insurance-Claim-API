@@ -6,7 +6,7 @@ import express from 'express';
 import { envConfig } from './config/env.config.js';
 import { systemLogs as logger, morganMiddleware } from './utils/logger.js';
 
-const createApp = () => {
+export const createApp = () => {
   const app = express();
 
   if (envConfig.isDevelopment) {
@@ -27,5 +27,3 @@ const createApp = () => {
 
   return app;
 };
-
-export default createApp;

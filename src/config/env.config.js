@@ -1,29 +1,25 @@
-/**
- * Configures and validates environment variables using the `envalid` library.
- *
- * This configuration ensures that the necessary environment variables are set
- * and provides default values for development. It includes:
- * `NODE_ENV`: Specifies the environment ('development', 'production', 'test'),
- *  with 'development' as the default.
- * `PORT`: The port number for the server, defaulting to 3000 in development.
- * `MONGODB_URI`: The MongoDB connection URI, defaulting to a local database in development.
- * `JWT_SECRET`: The secret key for JWT, with a default value for development.
- * `JWT_EXPIRES_IN`: The expiration time for JWT, defaulting to '1d' in development.
- */
-
 import 'dotenv/config';
 import process from 'process';
 import { cleanEnv, port, str } from 'envalid';
 
 export const envConfig = cleanEnv(process.env, {
   NODE_ENV: str({
+    default: 'development',
     choices: ['development', 'production', 'test'],
-    devDefault: 'development',
+    desc: 'The environment the application is running in',
   }),
-  PORT: port({ devDefault: 3000 }),
+  PORT: port({
+    default: 3000,
+    desc: 'The port the application is running on',
+  }),
   MONGODB_URI: str({
-    devDefault: 'mongodb://localhost:27017/vehicle-insurance-claim',
+    desc: 'MongoDB connection URI (e.g., mongodb://localhost:27017/db)',
   }),
-  JWT_SECRET: str({ devDefault: 'secret' }),
-  JWT_EXPIRES_IN: str({ devDefault: '1d' }),
+  JWT_SECRET: str({
+    desc: 'Secret key used for signing JWT tokens',
+  }),
+  JWT_EXPIRES_IN: str({
+    default: '1d',
+    desc: 'JWT token expiration time (e.g., "1h", "1d")',
+  }),
 });
