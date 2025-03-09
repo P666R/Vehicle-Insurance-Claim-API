@@ -1,5 +1,42 @@
 import mongoose from 'mongoose';
-import contactSchema from './contact.schema.js';
+import validator from 'validator';
+
+// -- Contact Schema --
+const contactSchema = new mongoose.Schema({
+  telephone: { type: String },
+  mobileTelephone: {
+    type: String,
+    validate: {
+      validator: (v) => !v || validator.isMobilePhone(v, 'IN'),
+      message: 'Invalid mobile telephone number',
+    },
+  },
+  email: {
+    type: String,
+    validate: {
+      validator: (v) => !v || validator.isEmail(v),
+      message: 'Invalid email address',
+    },
+  },
+  fax: { type: String },
+  homeTelephone: { type: String },
+  workTelephone: { type: String },
+});
+
+// -- Third Party Schema --
+const thirdPartySchema = new mongoose.Schema({
+  insurer: { type: String, required: true },
+  reference: { type: String, required: true },
+  client: { type: String },
+  registration: { type: String },
+  pavPayment: {
+    type: String,
+    enum: ['Received', 'Pending'],
+  },
+  pavPaymentChaseNotes: { type: String, trim: true },
+  packSubmittedDate: { type: Date },
+  contact: { type: contactSchema },
+});
 
 // -- Address Schema --
 const addressSchema = new mongoose.Schema({
@@ -195,10 +232,7 @@ const vehicleClaimSchema = new mongoose.Schema(
     },
     vehicle: { type: vehicleSchema, required: true },
     driver: { type: driverSchema, required: true },
-    thirdPartyId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'ThirdParty',
-    },
+    thirdParty: { type: thirdPartySchema }, // Embedded thirdParty schema
     repairer: { type: repairerSchema },
     repairProcess: { type: repairProcessSchema },
     invoice: { type: invoiceSchema },
@@ -223,7 +257,7 @@ vehicleClaimSchema.index({ incidentDate: 1 });
 vehicleClaimSchema.index({ 'driver.lastName': 1, 'driver.firstName': 1 });
 vehicleClaimSchema.index({ 'claimStatus.status': 1 });
 vehicleClaimSchema.index({ 'repairProcess.estimatedCompletionDate': 1 });
-vehicleClaimSchema.index({ thirdPartyId: 1 });
+vehicleClaimSchema.index({ 'thirdParty.insurer': 1 }); // Index on embedded field
 vehicleClaimSchema.index({ 'vehicle.make': 1, 'vehicle.model': 1 });
 vehicleClaimSchema.index({ 'metadata.updatedAt': 1 });
 vehicleClaimSchema.index({ incidentDate: 1, 'claimStatus.status': 1 });
@@ -236,4 +270,4 @@ vehicleClaimSchema.index({
 
 const VehicleClaim = mongoose.model('VehicleClaim', vehicleClaimSchema);
 
-export default () => VehicleClaim;
+export default VehicleClaim;
