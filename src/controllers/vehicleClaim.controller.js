@@ -1,45 +1,52 @@
+import z from 'zod';
 import {
   validateCreateVehicleClaim,
   validateUpdateVehicleClaim,
 } from '../dtos/vehicleClaim.dto.js';
+import { ValidationError } from '../errors/index.js';
 
 class VehicleClaimController {
   constructor(service) {
     this.service = service;
   }
 
-  async create(req, res) {
+  async create(req, res, next) {
     try {
       const validatedData = validateCreateVehicleClaim(req.body);
       const newVehicleClaim =
         await this.service.createVehicleClaim(validatedData);
       res.status(201).json(newVehicleClaim);
     } catch (error) {
-      res.status(400).json({ message: error.message, errors: error.errors });
+      if (error instanceof z.ZodError) {
+        return next(
+          new ValidationError('Validation failed', { errors: error.errors }),
+        );
+      }
+      next(error);
     }
   }
 
-  async findById(req, res) {
+  async findById(req, res, next) {
     try {
       const vehicleClaim = await this.service.getVehicleClaimById(
         req.params.id,
       );
       res.json(vehicleClaim);
     } catch (error) {
-      res.status(404).json({ message: error.message });
+      next(error);
     }
   }
 
-  async findAll(req, res) {
+  async findAll(req, res, next) {
     try {
       const vehicleClaims = await this.service.getAllVehicleClaims(req.query);
       res.json(vehicleClaims);
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      next(error);
     }
   }
 
-  async update(req, res) {
+  async update(req, res, next) {
     try {
       const validatedData = validateUpdateVehicleClaim(req.body);
       const updatedVehicleClaim = await this.service.updateVehicleClaim(
@@ -48,16 +55,21 @@ class VehicleClaimController {
       );
       res.json(updatedVehicleClaim);
     } catch (error) {
-      res.status(400).json({ message: error.message, errors: error.errors });
+      if (error instanceof z.ZodError) {
+        return next(
+          new ValidationError('Validation failed', { errors: error.errors }),
+        );
+      }
+      next(error);
     }
   }
 
-  async delete(req, res) {
+  async delete(req, res, next) {
     try {
       const result = await this.service.deleteVehicleClaim(req.params.id);
       res.json(result);
     } catch (error) {
-      res.status(404).json({ message: error.message });
+      next(error);
     }
   }
 }

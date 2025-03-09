@@ -16,10 +16,15 @@ const createVehicleClaimInstances = (model = null) => {
 // Instantiate controller with default model or mock for testing
 const controller = createVehicleClaimInstances();
 
-router.post('/', controller.create.bind(controller));
-router.get('/:id', controller.findById.bind(controller));
-router.get('/', controller.findAll.bind(controller));
-router.put('/:id', controller.update.bind(controller));
-router.delete('/:id', controller.delete.bind(controller));
+router
+  .route('/')
+  .get(controller.findAll.bind(controller))
+  .post(controller.create.bind(controller));
+
+router
+  .route('/:id')
+  .get(controller.findById.bind(controller))
+  .put(controller.update.bind(controller))
+  .delete(controller.delete.bind(controller));
 
 export default router;
