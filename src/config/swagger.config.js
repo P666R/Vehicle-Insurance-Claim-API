@@ -2,7 +2,7 @@ import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 import { envConfig } from './env.config.js';
 
-// Swagger definition
+// -- Swagger definition --
 const swaggerDefinition = {
   openapi: '3.0.0',
   info: {
@@ -736,16 +736,16 @@ const swaggerDefinition = {
   },
 };
 
-// Options for swagger-jsdoc
+// -- Options for swagger-jsdoc --
 const options = {
   swaggerDefinition,
   apis: ['./src/routes/*.js'],
 };
 
-// Initialize swagger-jsdoc
+// -- Initialize swagger-jsdoc --
 const swaggerSpec = swaggerJSDoc(options);
 
-// Export the Swagger UI middleware setup
+// -- Export the Swagger UI middleware setup --
 const setupSwagger = (app) => {
   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 };

@@ -284,9 +284,6 @@ const vehicleClaimSchema = new mongoose.Schema(
   },
 );
 
-// -- Indexes: Implicit from unique: true, explicitly kept as a use case --
-// vehicleClaimSchema.index({ companyReference: 1 });
-
 const VehicleClaim = mongoose.model('VehicleClaim', vehicleClaimSchema);
 
 export default VehicleClaim;
