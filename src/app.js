@@ -5,6 +5,7 @@ import express from 'express';
 
 import { envConfig } from './config/env.config.js';
 import { morganMiddleware } from './utils/logger.js';
+import { setupSwagger } from './config/swagger.config.js';
 import vehicleClaimRouter from './routes/vehicleClaim.routes.js';
 import { errorMiddleware, NotFoundError } from './errors/index.js';
 
@@ -19,6 +20,8 @@ export const createApp = () => {
   app.use(helmet());
   app.use(express.json());
   app.use(morganMiddleware);
+
+  setupSwagger(app);
 
   app.use('/api/v1/vehicle-claims', vehicleClaimRouter);
 

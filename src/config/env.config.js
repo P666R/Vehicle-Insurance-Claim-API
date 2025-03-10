@@ -15,11 +15,4 @@ export const envConfig = cleanEnv(process.env, {
   MONGODB_URI: str({
     desc: 'MongoDB connection URI (e.g., mongodb://localhost:27017/db)',
   }),
-  JWT_SECRET: str({
-    desc: 'Secret key used for signing JWT tokens',
-  }),
-  JWT_EXPIRES_IN: str({
-    default: '1d',
-    desc: 'JWT token expiration time (e.g., "1h", "1d")',
-  }),
 });

@@ -23,7 +23,7 @@ const thirdPartySchema = z.object({
   registration: z.string().optional(),
   pavPayment: z.enum(['Received', 'Pending']).optional(),
   pavPaymentChaseNotes: z.string().optional(),
-  packSubmittedDate: z.date().optional(),
+  packSubmittedDate: z.coerce.date().optional().nullable(),
   contact: contactSchema.optional(),
 });
 
@@ -51,7 +51,7 @@ const vehicleSchema = z.object({
   make: z.string().min(1, 'Make is required'),
   model: z.string().min(1, 'Model is required'),
   engineSize: z.string().optional(),
-  registrationDate: z.date().optional(),
+  registrationDate: z.coerce.date().optional().nullable(),
   damage: z.string().optional(),
   preExistingDamage: z.string().optional(),
   mobile: z.enum(['Yes', 'No']).optional(),
@@ -82,30 +82,30 @@ const authorizedBreakdownSchema = z.object({
 
 // -- Repair Process DTO --
 const repairProcessSchema = z.object({
-  bookingInDate: z.date().optional(),
-  mobileEstimateDate: z.date().optional(),
-  dateIn: z.date().optional(),
-  estimateReceivedDate: z.date().optional(),
-  authorisedDate: z.date().optional(),
+  bookingInDate: z.coerce.date().optional().nullable(),
+  mobileEstimateDate: z.coerce.date().optional().nullable(),
+  dateIn: z.coerce.date().optional().nullable(),
+  estimateReceivedDate: z.coerce.date().optional().nullable(),
+  authorisedDate: z.coerce.date().optional().nullable(),
   authorisedAmounts: z.number().min(0).optional(),
   authorisedBreakdown: authorizedBreakdownSchema.optional(),
-  supplementaryAuthorisedDate: z.date().optional(),
+  supplementaryAuthorisedDate: z.coerce.date().optional().nullable(),
   supplementaryAuthorisedAmounts: z.number().min(0).optional(),
   supplementaryReason: z.string().optional(),
   calculatedRepairDays: z.number().min(0).optional(),
-  estimatedCompletionDate: z.date().optional(),
-  revisedEstimatedCompletionDate: z.date().optional(),
-  repairCompletionDate: z.date().optional(),
-  dateOut: z.date().optional(),
+  estimatedCompletionDate: z.coerce.date().optional().nullable(),
+  revisedEstimatedCompletionDate: z.coerce.date().optional().nullable(),
+  repairCompletionDate: z.coerce.date().optional().nullable(),
+  dateOut: z.coerce.date().optional().nullable(),
   repairDelayNotes: z.string().optional(),
-  imagesReceivedDate: z.date().optional(),
+  imagesReceivedDate: z.coerce.date().optional().nullable(),
   underpinned: z.enum(['Yes', 'No']).optional(),
 });
 
 // -- Invoice DTO --
 const invoiceSchema = z.object({
-  receivedDate: z.date().optional(),
-  approvedDate: z.date().optional(),
+  receivedDate: z.coerce.date().optional().nullable(),
+  approvedDate: z.coerce.date().optional().nullable(),
   rejectedReasons: z.string().optional(),
   billingStatus: z.enum(['Paid', 'Pending', 'Invoiced', 'Disputed']).optional(),
 });
@@ -124,14 +124,14 @@ const financialSchema = z.object({
 
 // -- Total Loss DTO --
 const totalLossSchema = z.object({
-  date: z.date().optional(),
+  date: z.coerce.date().optional().nullable(),
   pav: z.number().min(0).optional(),
-  callDate: z.date().optional(),
-  chaseDates: z.date().optional(),
+  callDate: z.coerce.date().optional().nullable(),
+  chaseDates: z.coerce.date().optional().nullable(),
   valuationDisputeNotes: z.string().optional(),
-  v5cReceivedDate: z.date().optional(),
-  motReceivedDate: z.date().optional(),
-  financeLetterReceivedDate: z.date().optional(),
+  v5cReceivedDate: z.coerce.date().optional().nullable(),
+  motReceivedDate: z.coerce.date().optional().nullable(),
+  financeLetterReceivedDate: z.coerce.date().optional().nullable(),
 });
 
 // -- Salvage DTO --
@@ -140,12 +140,12 @@ const salvageSchema = z.object({
   category: z.enum(['A', 'B', 'C', 'D', 'N', 'S', 'None']).optional(),
   agentName: z.string().optional(),
   contact: contactSchema.optional(),
-  instructedDate: z.date().optional(),
-  collectedDate: z.date().optional(),
+  instructedDate: z.coerce.date().optional().nullable(),
+  collectedDate: z.coerce.date().optional().nullable(),
   valuePaid: z.enum(['Yes', 'No']).optional(),
   valueReceived: z.enum(['Yes', 'No']).optional(),
   lotNumber: z.string().optional(),
-  clearedDate: z.date().optional(),
+  clearedDate: z.coerce.date().optional().nullable(),
   customerRetaining: z.enum(['Yes', 'No']).optional(),
 });
 
@@ -179,13 +179,13 @@ const claimStatusSchema = z.object({
 });
 
 // -- Vehicle Claim DTOs --
-const createVehicleClaimDto = z.object({
+export const createVehicleClaimDto = z.object({
   companyReference: z.string().min(1, 'Company reference is required'),
   policyNumber: z.string().min(1, 'Policy number is required'),
   partnerRef: z.string().optional(),
-  incidentDate: z.date(),
+  incidentDate: z.coerce.date(),
   accidentCircumstances: z.string().optional(),
-  notificationDate: z.date().optional(),
+  notificationDate: z.coerce.date().optional().nullable(),
   fault: z
     .enum(['At Fault', 'Not At Fault', 'Split Liability', 'Undetermined'])
     .optional(),
@@ -201,8 +201,9 @@ const createVehicleClaimDto = z.object({
   claimStatus: claimStatusSchema,
 });
 
-const updateVehicleClaimDto = createVehicleClaimDto.partial();
+export const updateVehicleClaimDto = createVehicleClaimDto.partial();
 
+// Validation functions
 export const validateCreateVehicleClaim = (data) =>
   createVehicleClaimDto.parse(data);
 export const validateUpdateVehicleClaim = (data) =>

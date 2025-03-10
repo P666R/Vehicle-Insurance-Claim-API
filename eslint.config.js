@@ -1,6 +1,5 @@
 import globals from 'globals';
 import pluginJs from '@eslint/js';
-import jsdoc from 'eslint-plugin-jsdoc';
 import eslintConfigPrettier from 'eslint-config-prettier/flat';
 
 /** @type {import('eslint').Linter.Config[]} */
@@ -25,10 +24,8 @@ export default [
       curly: 'error', // Require following curly brace conventions
       'no-var': 'warn', // Disallow using var
       'no-unused-vars': 'warn', // Warn about unused variables
-      'jsdoc/require-description': 'warn', // Require JSDoc comments
     },
   },
   pluginJs.configs.recommended,
-  jsdoc.configs['flat/recommended'],
   eslintConfigPrettier,
 ];
