@@ -178,13 +178,6 @@ const claimStatusSchema = z.object({
   schemeCompanyReference: z.string().optional(),
 });
 
-// -- Metadata DTO --
-const metadataSchema = z.object({
-  createdBy: z.string().optional(),
-  updatedBy: z.string().optional(),
-  schemaVersion: z.string().default('1.0.0'),
-});
-
 // -- Vehicle Claim DTOs --
 const createVehicleClaimDto = z.object({
   companyReference: z.string().min(1, 'Company reference is required'),
@@ -198,7 +191,7 @@ const createVehicleClaimDto = z.object({
     .optional(),
   vehicle: vehicleSchema,
   driver: driverSchema,
-  thirdParty: thirdPartySchema.optional(), // Embedded thirdParty schema
+  thirdParty: thirdPartySchema.optional(),
   repairer: repairerSchema.optional(),
   repairProcess: repairProcessSchema.optional(),
   invoice: invoiceSchema.optional(),
@@ -206,12 +199,10 @@ const createVehicleClaimDto = z.object({
   totalLoss: totalLossSchema.optional(),
   salvage: salvageSchema.optional(),
   claimStatus: claimStatusSchema,
-  metadata: metadataSchema,
 });
 
 const updateVehicleClaimDto = createVehicleClaimDto.partial();
 
-// Validation functions
 export const validateCreateVehicleClaim = (data) =>
   createVehicleClaimDto.parse(data);
 export const validateUpdateVehicleClaim = (data) =>

@@ -210,13 +210,6 @@ const claimStatusSchema = new mongoose.Schema({
   schemeCompanyReference: { type: String },
 });
 
-// -- Metadata Schema --
-const metadataSchema = new mongoose.Schema({
-  createdBy: { type: String },
-  updatedBy: { type: String },
-  schemaVersion: { type: String, default: '1.0.0' },
-});
-
 // -- Vehicle Claim Schema --
 const vehicleClaimSchema = new mongoose.Schema(
   {
@@ -232,7 +225,7 @@ const vehicleClaimSchema = new mongoose.Schema(
     },
     vehicle: { type: vehicleSchema, required: true },
     driver: { type: driverSchema, required: true },
-    thirdParty: { type: thirdPartySchema }, // Embedded thirdParty schema
+    thirdParty: { type: thirdPartySchema },
     repairer: { type: repairerSchema },
     repairProcess: { type: repairProcessSchema },
     invoice: { type: invoiceSchema },
@@ -240,13 +233,9 @@ const vehicleClaimSchema = new mongoose.Schema(
     totalLoss: { type: totalLossSchema },
     salvage: { type: salvageSchema },
     claimStatus: { type: claimStatusSchema, required: true },
-    metadata: { type: metadataSchema, required: true },
   },
   {
-    timestamps: {
-      createdAt: 'metadata.createdAt',
-      updatedAt: 'metadata.updatedAt',
-    },
+    timestamps: true,
   },
 );
 
@@ -257,7 +246,7 @@ vehicleClaimSchema.index({ incidentDate: 1 });
 vehicleClaimSchema.index({ 'driver.lastName': 1, 'driver.firstName': 1 });
 vehicleClaimSchema.index({ 'claimStatus.status': 1 });
 vehicleClaimSchema.index({ 'repairProcess.estimatedCompletionDate': 1 });
-vehicleClaimSchema.index({ 'thirdParty.insurer': 1 }); // Index on embedded field
+vehicleClaimSchema.index({ 'thirdParty.insurer': 1 });
 vehicleClaimSchema.index({ 'vehicle.make': 1, 'vehicle.model': 1 });
 vehicleClaimSchema.index({ 'metadata.updatedAt': 1 });
 vehicleClaimSchema.index({ incidentDate: 1, 'claimStatus.status': 1 });
